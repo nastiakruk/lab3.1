@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
-using AnalaizerClass;
 
 namespace Calculator
 {
@@ -39,7 +38,12 @@ namespace Calculator
         {
             try
             {
-                Memory = int.Parse(tbRes.Text);
+                if (tbRes.Text == "")
+                {
+                    Memory = int.Parse(tbExpression.Text);
+                    tbExpression.Text = "0";
+                }
+                else Memory = int.Parse(tbRes.Text);
             }
             catch
             {
@@ -105,7 +109,8 @@ namespace Calculator
         }
         private void buttonMRead_Click(object sender, EventArgs e)
         {
-            tbExpression.Text += Memory.ToString();
+            if (tbExpression.Text == "0") tbExpression.Text = Memory.ToString();
+            else if (Memory != 0) tbExpression.Text += Memory.ToString();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -233,8 +238,8 @@ namespace Calculator
 
         private void bcResult(object sender, EventArgs e)
         {
-            Class2 alalizerOb = new Class2(tbExpression.Text);
-            tbRes.Text = Class2.Estimate();
+            AnalaizerClass.Class2 alalizerOb = new AnalaizerClass.Class2(tbExpression.Text);
+            tbRes.Text = AnalaizerClass.Class2.Estimate();
             tbExpression.Text = "0";
         }
 

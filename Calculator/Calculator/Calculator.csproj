@@ -85,9 +85,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AnalizerClass\AnalizerClass.csproj">
+    <ProjectReference Include="..\AnalizerClass\AnalaizerClass.csproj">
       <Project>{9d06b2cc-b590-4646-ad55-38d4324c76bf}</Project>
-      <Name>AnalizerClass</Name>
+      <Name>AnalaizerClass</Name>
     </ProjectReference>
     <ProjectReference Include="..\CalcClass\CalcClass.csproj">
       <Project>{d3bb4497-290d-4edf-b65f-4788c421a663}</Project>
