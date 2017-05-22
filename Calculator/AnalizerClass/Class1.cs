@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CalcClass;
 
 namespace AnalaizerClass
 {
@@ -508,7 +509,306 @@ namespace AnalaizerClass
 
         //-----------------------------------------------------------------------------------------------------
 
- 
+        public static System.Collections.ArrayList CreateStack()
+        {
+            try
+            {
+                String[] Exp = expression.Split(' ');
+                System.Collections.ArrayList FinalStack = new System.Collections.ArrayList();
+                System.Collections.ArrayList Stack = new System.Collections.ArrayList();
+
+                int cur = 0;
+                while (cur < Exp.Length)
+                {
+                    bool b1 = false;
+                    int b = -1;
+                    // якщо число 0-9
+                    for (int i = 0; i < 10; i++)
+                    {
+                        if (Exp[cur][0].ToString() == i.ToString())
+                        {
+                            b1 = true;
+                            break;
+                        }
+                    }
+                    if (b1)
+                    {
+                        FinalStack.Add(Exp[cur].ToString());
+                        cur++;
+                        continue;
+                    }
+                    if ((Exp[cur].ToString() == "m") || (Exp[cur].ToString() == "p"))
+                    {
+                        Stack.Add(Exp[cur].ToString());
+                        cur++;
+                        continue;
+                    }
+                    //        Якщо "+" "-"
+                    if ((Exp[cur] == "+") || (Exp[cur] == "-"))
+                    {
+                        if (Stack.Count > 0)
+                        {
+                            if (Stack[Stack.Count - 1].ToString() != "(")
+                            {
+                                b = 2;
+                            }
+                            else
+                            {
+                                b = 1;
+                            }
+                        }
+                        else
+                        {
+                            b = 1;
+                        }
+                    }
+                    //якщо *, /, мод
+                    if ((Exp[cur] == "*") || (Exp[cur] == "/") || (Exp[cur] == "mod"))
+                    {
+                        if (Stack.Count > 0)
+                        {
+                            if (!((Stack[Stack.Count - 1].ToString() == "(") || (Stack[Stack.Count - 1].ToString() == "+") || (Stack[Stack.Count - 1].ToString() == "-")))
+                            {
+                                b = 3;
+                            }
+                            else
+                            {
+                                b = 1;
+                            }
+                        }
+                        else
+                        {
+                            b = 1;
+                        }
+                    }
+                    if ((Exp[cur] == "("))
+                    {
+                        b = 1;
+                    }
+                    if ((Exp[cur] == ")"))
+                    {
+                        b = 4;
+                    }
+                    //----------------------
+                    switch (b)
+                    {
+                        case 1:
+                            Stack.Add(Exp[cur]);
+                            cur++;
+                            break;
+                        case 2:
+                            b1 = false;
+                            while (!b1)
+                            {
+                                FinalStack.Add(Stack[Stack.Count - 1]);
+                                Stack.RemoveAt(Stack.Count - 1);
+                                if (Stack.Count > 0)
+                                {
+                                    if (Stack[Stack.Count - 1].ToString() == "(")
+                                    {
+                                        Stack.Add(Exp[cur]);
+                                        cur++;
+                                        b1 = true;
+                                    }
+                                }
+                                else
+                                {
+                                    Stack.Add(Exp[cur]);
+                                    cur++;
+                                    b1 = true;
+                                }
+                            }
+                            break;
+                        case 3:
+                            b1 = false;
+                            while (!b1)
+                            {
+                                FinalStack.Add(Stack[Stack.Count - 1]);
+                                Stack.RemoveAt(Stack.Count - 1);
+                                if (Stack.Count > 0)
+                                {
+                                    if ((Stack[Stack.Count - 1].ToString() == "(") || (Stack[Stack.Count - 1].ToString() == "+") || (Stack[Stack.Count - 1].ToString() == "-"))
+                                    {
+                                        Stack.Add(Exp[cur]);
+                                        cur++;
+                                        b1 = true;
+                                    }
+                                }
+                                else
+                                {
+                                    Stack.Add(Exp[cur]);
+                                    cur++;
+                                    b1 = true;
+                                }
+                            }
+                            break;
+                        case 4:
+                            b1 = false;
+                            while (!b1)
+                            {
+                                FinalStack.Add(Stack[Stack.Count - 1]);
+                                Stack.RemoveAt(Stack.Count - 1);
+
+                                if (Stack[Stack.Count - 1].ToString() == "(")
+                                {
+                                    Stack.RemoveAt(Stack.Count - 1);
+                                    cur++;
+                                    b1 = true;
+                                }
+                            }
+                            break;
+                        default:
+                            FinalStack.Clear();
+                            Stack.Clear();
+                            ShowMessege = true;
+                            cur = Exp.Length;
+                            FinalStack.Add("error 03");
+                            break;
+                    }
+                }
+                while (Stack.Count > 0)
+                {
+                    FinalStack.Add(Stack[Stack.Count - 1]);
+                    Stack.RemoveAt(Stack.Count - 1);
+                }
+                System.Collections.ArrayList MyStack = new System.Collections.ArrayList(expression.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+                MyStack = FinalStack;
+                return MyStack;
+            }
+            catch
+            {
+                System.Collections.ArrayList FinalStack = new System.Collections.ArrayList();
+                ShowMessege = true;
+                FinalStack.Add("error 03");
+                return FinalStack;
+            }
+        }
+        //---------------------------------------------------------------------
+
+        public static string RunEstimate(System.Collections.ArrayList Exp)
+        {
+            try
+            {
+                int k = 0, a, b, res;
+                while (Exp.Count > 1)
+                {
+                    if (!(("*".Equals(Exp[k])) || ("/".Equals(Exp[k])) || ("+".Equals(Exp[k])) || (("-".Equals(Exp[k])) || ("mod".Equals(Exp[k])))))
+                    {
+                        if ("m".Equals(Exp[k]) || ("p".Equals(Exp[k])))
+                        {
+                            a = int.Parse(Exp[k - 1].ToString());
+                            if ("p".Equals(Exp[k]))
+                            {
+                                res = a;
+                            }
+                            else
+                            {
+                                res = int.Parse(Class1.IABS(a).ToString());
+                                if (Class1._lastError.Length > 0)
+                                {
+                                    ShowMessege = true;
+                                    expression = Class1._lastError;
+                                    return expression;
+                                }
+                            }
+                            Exp.RemoveAt(k);
+                            Exp.RemoveAt(k - 1);
+
+                            Exp.Insert(k - 1, res.ToString());
+                            k -= 1;
+                        }
+                        k++;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            a = int.Parse(Exp[k - 2].ToString());
+                            b = int.Parse(Exp[k - 1].ToString());
+                        }
+                        catch
+                        {
+                            ShowMessege = true;
+                            expression = "error 06";
+                            return expression;
+                        }
+
+                        switch (Exp[k].ToString())
+                        {
+                            case "+":
+                                res = Class1.Add(a, b);
+                                if (Class1._lastError.Length > 0)
+                                {
+                                    ShowMessege = true;
+                                    expression = Class1._lastError;
+                                    Class1._lastError = "";
+                                    return expression;
+                                }
+                                break;
+                            case "-":
+                                res = Class1.Sub(a, b);
+                                if (Class1._lastError.Length > 0)
+                                {
+                                    ShowMessege = true;
+                                    expression = Class1._lastError;
+                                    Class1._lastError = "";
+                                    return expression;
+                                }
+                                break;
+                            case "*":
+                                res = Class1.Mult(a, b);
+                                if (Class1._lastError.Length > 0)
+                                {
+                                    ShowMessege = true;
+                                    expression = Class1._lastError;
+                                    Class1._lastError = "";
+                                    return expression;
+                                }
+                                break;
+                            case "/":
+                                res = Class1.Div(a, b);
+                                if (Class1._lastError.Length > 0)
+                                {
+                                    ShowMessege = true;
+                                    expression = Class1._lastError;
+                                    Class1._lastError = "";
+                                    return expression;
+                                }
+                                break;
+                            case "mod":
+                                res = Class1.Mod(a, b);
+                                if (Class1._lastError.Length > 0)
+                                {
+                                    ShowMessege = true;
+                                    expression = Class1._lastError;
+                                    Class1._lastError = "";
+                                    return expression;
+                                }
+                                break;
+                            default:
+                                ShowMessege = true;
+                                expression = "error 03";
+                                return expression;
+                        }
+                        Exp.RemoveAt(k);
+                        Exp.RemoveAt(k - 1);
+                        Exp.RemoveAt(k - 2);
+                        Exp.Insert(k - 2, res.ToString());
+                        k -= 2;
+                    }
+                }
+                return Exp[0].ToString();
+            }
+            catch
+            {
+                ShowMessege = true;
+                expression = "error 03";
+                return expression;
+            }
+        }
+        //-----------------------------------------------------------------------------------------------------
+
+
         public static string Estimate()
         {
             if (!CheckCurrency())
@@ -522,7 +822,29 @@ namespace AnalaizerClass
                 return expression;
             }
 
+
+            var MyStack = CreateStack();
+
+            if (MyStack.Count > 30)
+            {
+                ShowMessege = true;
+                expression = "Error 08";
+            }
+
+            if (ShowMessege)
+            {
+                ShowMessege = false;
+                return expression;
+            }
+            expression = RunEstimate(MyStack);
+            if (ShowMessege)
+            {
+                ShowMessege = false;
+                return expression;
+            }
+            expression.Trim();
             return expression;
+
         }
     }
 }
