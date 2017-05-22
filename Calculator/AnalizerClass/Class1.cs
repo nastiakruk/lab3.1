@@ -808,7 +808,6 @@ namespace AnalaizerClass
         }
         //-----------------------------------------------------------------------------------------------------
 
-
         public static string Estimate()
         {
             if (!CheckCurrency())

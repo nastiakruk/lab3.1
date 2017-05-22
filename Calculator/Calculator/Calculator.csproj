@@ -84,6 +84,16 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnalizerClass\AnalizerClass.csproj">
+      <Project>{9d06b2cc-b590-4646-ad55-38d4324c76bf}</Project>
+      <Name>AnalizerClass</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CalcClass\CalcClass.csproj">
+      <Project>{d3bb4497-290d-4edf-b65f-4788c421a663}</Project>
+      <Name>CalcClass</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

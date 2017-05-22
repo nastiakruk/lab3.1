@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
+using AnalaizerClass;
 
 namespace Calculator
 {
@@ -232,7 +233,9 @@ namespace Calculator
 
         private void bcResult(object sender, EventArgs e)
         {
-
+            Class2 alalizerOb = new Class2(tbExpression.Text);
+            tbRes.Text = Class2.Estimate();
+            tbExpression.Text = "0";
         }
 
         private void tbExpression_KeyUp(object sender, KeyEventArgs e)
@@ -244,8 +247,7 @@ namespace Calculator
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
-            { Application.Exit(); }
-           
+            { Application.Exit(); }          
 
         }
 
